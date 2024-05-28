@@ -1,0 +1,65 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutterfirebasestorage1/pages/error_page.dart';
+import 'package:flutterfirebasestorage1/pages/loading_page.dart';
+import 'package:flutterfirebasestorage1/pages/storage_page.dart';
+import 'dart:io';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Tente definir o diretório atual explicitamente para a raiz do projeto
+  Directory.current = Directory(Platform.environment['HOME'] ?? Platform.environment['USERPROFILE'] ?? Directory.current.path);
+  print('Current Directory: ${Directory.current.path}');
+  
+  // Obtenha o caminho absoluto do arquivo .env
+  final envPath = Directory.current.path + '/.env';
+
+  // Verifique se o arquivo .env existe antes de carregá-lo
+   if (!await File(envPath).exists()) {
+    print('Erro: O arquivo .env não foi encontrado em $envPath.');
+    return;
+  }
+
+  //await dotenv.load(fileName: ".env");
+  await dotenv.load(fileName: envPath);
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(App());
+}
+
+class App extends StatelessWidget {
+  final Future<FirebaseApp> _inicializacao = Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  App({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Firebase Storage',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.yellow,
+        brightness: Brightness.dark,
+      ),
+      home: FutureBuilder(
+        future: _inicializacao,
+        builder: (context, app) {
+          if (app.connectionState == ConnectionState.done) {
+            return const StoragePage();
+          }
+
+          if (app.hasError) return const ErrorPage();
+
+          return const LoadingPage();
+        },
+      ),
+    );
+  }
+}
