@@ -1,5 +1,6 @@
 # flutterfirebasestorage1
 
+
 Projeto baseado na video aula 'Enviar Fotos para o Firebase no Flutter (Firebase Storage)' que se encontra no YOUTUBE 'https://www.youtube.com/watch?v=D7OGzzc6jj8&t=1436s' que tem como intuito estudar o uso do recurso 'storage' no firebase que é uma plataforma de desenvolvimento de aplicativos móveis e web oferecida pelo Google.
 
 obs: neste projeto foi considerado apenas o android e precisa dos arquivos 'google-services.json' e '.env' que conterá informações de sua conta firebase
